@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Check-In | MindEase</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Inter,Arial,sans-serif; background:#f5faf8; color:#29453d; line-height:1.6; }
+.navbar { height:72px; background:rgba(255,255,255,.96); border-bottom:1px solid #e4eee9; position:sticky; top:0; z-index:1000; backdrop-filter:blur(10px); }
+.nav-inner { max-width:1180px; height:100%; margin:auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { text-decoration:none; color:#21483d; font-size:21px; font-weight:700; display:flex; align-items:center; gap:10px; }
+.nav-logo-icon { width:36px; height:36px; border-radius:11px; background:#dff5ed; color:#25725d; display:flex; align-items:center; justify-content:center; font-weight:800; }
+.nav-links { display:flex; align-items:center; gap:8px; }
+.nav-links a { text-decoration:none; color:#61746e; font-size:14px; font-weight:600; padding:10px 13px; border-radius:10px; transition:.2s; }
+.nav-links a:hover, .nav-links a.active { background:#e7f6f0; color:#26725e; }
+.nav-right { display:flex; align-items:center; }
+.profile-area { position:relative; }
+.profile-btn { width:42px; height:42px; border:none; border-radius:50%; background:#dff5ed; color:#27715d; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.profile-btn:hover { background:#cceee2; }
+.profile-dropdown { position:absolute; top:54px; right:0; width:310px; background:white; border:1px solid #e1ece7; border-radius:18px; padding:18px; box-shadow:0 18px 45px rgba(36,69,59,.15); display:none; }
+.profile-dropdown.show { display:block; }
+.profile-header { display:flex; align-items:center; gap:13px; padding-bottom:16px; border-bottom:1px solid #edf2ef; }
+.profile-avatar { width:48px; height:48px; border-radius:50%; background:#dff5ed; color:#26725e; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; }
+.profile-header h3 { font-size:16px; color:#243b35; margin-bottom:4px; }
+.profile-header p { font-size:12px; color:#7b8c87; word-break:break-word; }
+.profile-details { margin-top:15px; display:flex; flex-direction:column; gap:10px; }
+.detail-box { background:#f7fbf9; border:1px solid #edf3f0; border-radius:12px; padding:11px 13px; }
+.detail-box span { display:block; font-size:11px; color:#84948f; margin-bottom:4px; }
+.detail-box strong { display:block; font-size:14px; color:#304941; word-break:break-word; }
+.profile-logout { width:100%; margin-top:15px; border:none; border-radius:11px; padding:11px; background:#f1f5f3; color:#52655f; font-weight:700; cursor:pointer; }
+.profile-logout:hover { background:#e6eeeb; }
+.main { max-width:900px; margin:auto; padding:55px 24px 70px; }
+.page-heading { margin-bottom:28px; }
+.small-title { color:#3d8973; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:7px; }
+.page-heading h1 { font-size:34px; color:#21483d; margin-bottom:8px; }
+.page-heading p { color:#71837d; font-size:15px; max-width:650px; }
+.checkin-card { background:white; border:1px solid #e2eee9; border-radius:24px; padding:32px; box-shadow:0 10px 35px rgba(45,78,68,.06); }
+.section { margin-bottom:30px; }
+.section:last-child { margin-bottom:0; }
+.section-label { display:block; font-size:15px; font-weight:700; color:#314d45; margin-bottom:13px; }
+.section-help { font-size:12px; color:#879792; margin-top:-7px; margin-bottom:13px; }
+.mood-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+.mood-btn { border:1px solid #e1ece7; background:#f9fcfb; border-radius:15px; padding:15px 8px; cursor:pointer; transition:.2s; color:#526861; }
+.mood-btn:hover { border-color:#b9ded2; background:#f0faf6; transform:translateY(-2px); }
+.mood-btn.selected { border-color:#54a68c; background:#e4f6ef; color:#26725e; box-shadow:0 5px 15px rgba(52,124,103,.10); }
+.mood-emoji { display:block; font-size:27px; margin-bottom:6px; }
+.mood-name { font-size:12px; font-weight:700; }
+.stress-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.stress-value { min-width:48px; text-align:center; background:#e7f6f0; color:#27725e; border-radius:10px; padding:6px 10px; font-size:14px; font-weight:800; }
+input[type="range"] { width:100%; accent-color:#3f9078; cursor:pointer; }
+.range-labels { display:flex; justify-content:space-between; color:#91a09b; font-size:11px; margin-top:5px; }
+textarea { width:100%; min-height:180px; resize:vertical; border:1px solid #dce9e4; background:#fbfdfc; border-radius:16px; padding:15px; font-family:inherit; font-size:14px; color:#344e46; outline:none; transition:.2s; }
+textarea::placeholder { color:#a2afaa; }
+textarea:focus { border-color:#79bca9; background:white; box-shadow:0 0 0 4px rgba(82,166,140,.08); }
+.text-footer { display:flex; justify-content:space-between; margin-top:7px; color:#96a39f; font-size:11px; }
+.privacy-note { background:#f3faf7; border:1px solid #dfeee8; border-radius:15px; padding:14px 16px; display:flex; gap:11px; align-items:flex-start; margin-bottom:22px; }
+.privacy-icon { font-size:18px; }
+.privacy-note p { color:#71847d; font-size:12px; }
+.save-btn { width:100%; border:none; background:#347c67; color:white; padding:14px; border-radius:13px; font-size:14px; font-weight:800; cursor:pointer; transition:.2s; }
+.save-btn:hover { background:#286653; transform:translateY(-1px); }
+.result { display:none; margin-top:22px; padding:20px; border-radius:17px; border:1px solid #dceee7; background:#f1faf6; }
+.result.show { display:block; }
+.result-title { font-size:16px; font-weight:800; color:#2e6958; margin-bottom:5px; }
+.result-message { color:#657a72; font-size:13px; }
+.result-links { display:flex; gap:10px; margin-top:15px; flex-wrap:wrap; }
+.result-link { text-decoration:none; padding:9px 13px; border-radius:10px; background:white; border:1px solid #dce9e4; color:#397762; font-size:12px; font-weight:700; }
+.result-link:hover { background:#eaf7f2; }
+.result.support { background:#fff8ef; border-color:#f1dfc6; }
+.result.support .result-title { color:#8a6334; }
+.footer { background:#203f36; color:#dcebe6; }
+.footer-inner { max-width:1180px; margin:auto; padding:42px 24px 25px; display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:50px; }
+.footer-brand h3 { font-size:20px; color:#fff; margin-bottom:10px; }
+.footer-brand p { max-width:350px; color:#b6cbc4; font-size:13px; line-height:1.7; }
+.footer-column h4 { color:#fff; font-size:13px; margin-bottom:13px; }
+.footer-column a { display:block; text-decoration:none; color:#b6cbc4; font-size:12px; margin-bottom:9px; }
+.footer-column a:hover { color:#fff; }
+.footer-bottom { max-width:1180px; margin:auto; border-top:1px solid rgba(255,255,255,.10); padding:17px 24px; display:flex; justify-content:space-between; align-items:center; gap:15px; }
+.footer-bottom p, .footer-tag { color:#9eb7ae; font-size:11px; }
+@media(max-width:800px){ .nav-links{ display:none; } .mood-grid{ grid-template-columns:repeat(3,1fr); } }
+@media(max-width:600px){ .nav-inner{ padding:0 16px; } .profile-dropdown{ width:280px; right:-5px; } .main{ padding:40px 16px 55px; } .page-heading h1{ font-size:28px; } .checkin-card{ padding:21px; border-radius:20px; } .mood-grid{ grid-template-columns:repeat(2,1fr); } .footer-inner{ grid-template-columns:1fr; gap:28px; padding:35px 20px 22px; } .footer-bottom{ flex-direction:column; align-items:flex-start; padding:17px 20px; } }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<div class="nav-inner">
+<a href="home.html" class="nav-logo"><span class="nav-logo-icon">M</span>MindEase</a>
+<nav class="nav-links"><a href="home.html">Home</a><a href="checkin.html" class="active">Check-In</a><a href="history.html">My History</a><a href="insights.html">Insights</a><a href="privacy.html">Privacy</a></nav>
+<div class="nav-right">
+<div class="profile-area">
+<button class="profile-btn" id="profileBtn"><span id="profileInitial">U</span></button>
+<div class="profile-dropdown" id="profileDropdown">
+<div class="profile-header">
+<div class="profile-avatar" id="profileAvatar">U</div>
+<div><h3 id="profileName">User</h3><p id="profileEmail">user@email.com</p></div>
+</div>
+<div class="profile-details">
+<div class="detail-box"><span>Full Name</span><strong id="profileFullName">User</strong></div>
+<div class="detail-box"><span>Email</span><strong id="profileDetailEmail">user@email.com</strong></div>
+</div>
+<button class="profile-logout" id="logoutBtn">Logout</button>
+</div>
+</div>
+</div>
+</div>
+</header>
+
+<main class="main">
+<section class="page-heading">
+<div class="small-title">Daily Check-In</div>
+<h1>How are you feeling today?</h1>
+<p>Take a quiet moment to check in with yourself. There are no right or wrong answers.</p>
+</section>
+
+<div class="checkin-card">
+<div class="section">
+<label class="section-label">How would you describe your mood?</label>
+<div class="mood-grid">
+<button class="mood-btn" data-mood="Good" data-score="5"><span class="mood-emoji">😊</span><span class="mood-name">Good</span></button>
+<button class="mood-btn" data-mood="Okay" data-score="4"><span class="mood-emoji">🙂</span><span class="mood-name">Okay</span></button>
+<button class="mood-btn" data-mood="Low" data-score="2"><span class="mood-emoji">😔</span><span class="mood-name">Low</span></button>
+<button class="mood-btn" data-mood="Anxious" data-score="2"><span class="mood-emoji">😟</span><span class="mood-name">Anxious</span></button>
+<button class="mood-btn" data-mood="Stressed" data-score="1"><span class="mood-emoji">😫</span><span class="mood-name">Stressed</span></button>
+</div>
+</div>
+
+<div class="section">
+<div class="stress-top">
+<label class="section-label">How stressed do you feel?</label>
+<div class="stress-value"><span id="stressValue">5</span>/10</div>
+</div>
+<input type="range" id="stressRange" min="0" max="10" value="5">
+<div class="range-labels"><span>0 — Not stressed</span><span>10 — Very stressed</span></div>
+</div>
+
+<div class="section">
+<label class="section-label">Want to tell us more? <span style="font-weight:400;color:#899791;">(Optional)</span></label>
+<p class="section-help">You can write freely about what is on your mind.</p>
+<textarea id="feelingText" maxlength="2000" placeholder="Write how you are feeling..."></textarea>
+<div class="text-footer"><span>Your reflection is private.</span><span id="charCount">0 / 2000</span></div>
+</div>
+
+<div class="privacy-note">
+<div class="privacy-icon">🔒</div>
+<p>Your check-in is saved securely. MindEase does not diagnose mental health conditions.</p>
+</div>
+
+<button class="save-btn" id="saveBtn">Save Check-In</button>
+
+<div class="result" id="resultBox">
+<div class="result-title" id="resultTitle">Thanks for checking in 💚</div>
+<div class="result-message" id="resultMessage">Your check-in has been saved.</div>
+<div class="result-links">
+<a href="history.html" class="result-link">View My History →</a>
+<a href="insights.html" class="result-link">View Insights →</a>
+</div>
+</div>
+</div>
+</main>
+
+<script>
+if(localStorage.getItem("mindease_session") !== "true"){ window.location.replace("index.html"); }
+
+const savedUser = JSON.parse(localStorage.getItem("mindease_user"));
+if(savedUser){
+    const name = savedUser.name || "User";
+    const email = savedUser.email || "Not available";
+    const initial = name.trim().charAt(0).toUpperCase() || "U";
+    document.getElementById("profileName").textContent = name;
+    document.getElementById("profileEmail").textContent = email;
+    document.getElementById("profileFullName").textContent = name;
+    document.getElementById("profileDetailEmail").textContent = email;
+    document.getElementById("profileInitial").textContent = initial;
+    document.getElementById("profileAvatar").textContent = initial;
+}
+
+const profileBtn = document.getElementById("profileBtn");
+const profileDropdown = document.getElementById("profileDropdown");
+profileBtn.addEventListener("click",function(event){ event.stopPropagation(); profileDropdown.classList.toggle("show"); });
+document.addEventListener("click",function(event){ if(!profileDropdown.contains(event.target) && !profileBtn.contains(event.target)){ profileDropdown.classList.remove("show"); } });
+
+document.getElementById("logoutBtn").addEventListener("click",function(){
+    localStorage.removeItem("mindease_session");
+    window.location.replace("index.html");
+});
+
+let selectedMood = "";
+let selectedMoodScore = 0;
+const moodButtons = document.querySelectorAll(".mood-btn");
+moodButtons.forEach(button => {
+    button.addEventListener("click",function(){
+        moodButtons.forEach(btn => btn.classList.remove("selected"));
+        this.classList.add("selected");
+        selectedMood = this.dataset.mood;
+        selectedMoodScore = Number(this.dataset.score);
+    });
+});
+
+const stressRange = document.getElementById("stressRange");
+const stressValue = document.getElementById("stressValue");
+stressRange.addEventListener("input",function(){ stressValue.textContent = this.value; });
+
+const feelingText = document.getElementById("feelingText");
+const charCount = document.getElementById("charCount");
+feelingText.addEventListener("input",function(){ charCount.textContent = this.value.length + " / 2000"; });
+
+function getCheckins(){ return JSON.parse(localStorage.getItem("mindease_checkins")) || []; }
+
+function hasConcerningLanguage(text){
+    const lowerText = text.toLowerCase();
+    const concerningPhrases = ["i want to die", "i want to hurt myself", "suicide", "suicidal", "kill myself", "end my life", "i am unsafe", "someone is abusing me", "i am in danger", "i was attacked", "i feel threatened"];
+    return concerningPhrases.some(phrase => lowerText.includes(phrase));
+}
+
+function isRisingStress(items){
+    if(items.length < 4) return false;
+    const recent = items.slice(-4);
+    return (Number(recent[0].stress) < Number(recent[1].stress) && Number(recent[1].stress) < Number(recent[2].stress) && Number(recent[2].stress) < Number(recent[3].stress));
+}
+
+/* ================= SAVE CHECK-IN (BACKEND HOOKED) ================= */
+document.getElementById("saveBtn").addEventListener("click",function(){
+    if(!selectedMood){ alert("Please select your mood first."); return; }
+
+    const text = feelingText.value.trim();
+    const stress = Number(stressRange.value);
+
+    // Get User ID
+    const userId = savedUser && savedUser.id ? savedUser.id : "unknown";
+
+    const checkinData = {
+        userId: userId,
+        mood: selectedMood,
+        moodScore: selectedMoodScore,
+        stress: stress,
+        text: text
+    };
+
+    fetch("http://localhost:5000/api/checkin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(checkinData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.message === "Check-in save ho gaya!" || data.checkin) {
+            // Local array mein update taaki UI features chalu rahein
+            const checkins = getCheckins();
+            const storedCheckin = data.checkin || checkinData; // Backend dwara diya gaya object
+            storedCheckin.date = new Date().toISOString(); 
+            
+            checkins.push(storedCheckin);
+            localStorage.setItem("mindease_checkins", JSON.stringify(checkins));
+
+            showResponse(storedCheckin, checkins);
+        } else {
+            alert("Error saving check-in.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Server se connect nahi ho paya. Make sure your server is running on Port 3000.");
+    });
+});
+
+function showResponse(checkin,checkins){
+    const resultBox = document.getElementById("resultBox");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultMessage = document.getElementById("resultMessage");
+
+    resultBox.classList.remove("support");
+
+    if(hasConcerningLanguage(checkin.text)){
+        resultBox.classList.add("support");
+        resultTitle.textContent = "Your message may indicate that you need support.";
+        resultMessage.textContent = "Consider telling a trusted person or a qualified professional about what you are experiencing. If you are in immediate danger, move to a safer place and contact a trusted adult or appropriate local emergency support.";
+    }
+    else if(isRisingStress(checkins)){
+        resultTitle.textContent = "We noticed a rising stress pattern.";
+        const recent = checkins.slice(-4);
+        const first = recent[0].stress;
+        const last = recent[recent.length - 1].stress;
+        resultMessage.textContent = "Your stress increased from " + first + "/10 to " + last + "/10 over your last 4 check-ins. This may be a useful moment to pause, reflect, and reach out for support if the pattern continues.";
+    }
+    else if(checkin.stress >= 8){
+        resultTitle.textContent = "Thanks for checking in 💚";
+        resultMessage.textContent = "You reported a higher level of stress today. Consider giving yourself some quiet time and connecting with someone you trust if you feel you need support.";
+    }
+    else {
+        resultTitle.textContent = "Thanks for checking in 💚";
+        resultMessage.textContent = "Your check-in has been saved securely on the server. Keep checking in regularly so you can notice changes in your mood and stress over time.";
+    }
+
+    resultBox.classList.add("show");
+    resultBox.scrollIntoView({ behavior:"smooth", block:"center" });
+}
+</script>
+</body>
+</html>

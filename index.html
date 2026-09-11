@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindEase | Private Mental Wellness Companion</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #f5faf8; color: #29443c; min-height: 100vh; }
+        .navbar { height: 72px; background: rgba(255, 255, 255, 0.96); border-bottom: 1px solid #e4eee9; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
+        .nav-inner { max-width: 1180px; height: 100%; margin: auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+        .nav-logo { text-decoration: none; color: #21483d; font-size: 21px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .nav-logo-icon { width: 36px; height: 36px; border-radius: 11px; background: #dff5ed; color: #25725d; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+        .nav-links a { text-decoration: none; color: #61746e; font-size: 14px; font-weight: 600; padding: 10px 13px; border-radius: 10px; transition: 0.2s; }
+        .nav-links a:hover { background: #eef8f4; color: #28735f; }
+        .page { min-height: calc(100vh - 72px); display: flex; flex-direction: column; }
+        .main-section { flex: 1; max-width: 1180px; width: 100%; margin: auto; padding: 40px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        .welcome-content { animation: fadeUp 0.7s ease; }
+        .small-badge { display: inline-flex; align-items: center; gap: 8px; background: #e6f7f1; color: #28745f; padding: 8px 13px; border-radius: 30px; font-size: 13px; font-weight: 700; margin-bottom: 22px; }
+        .small-badge span { width: 8px; height: 8px; border-radius: 50%; background: #55aa8e; }
+        .welcome-content h1 { font-size: clamp(34px, 4.5vw, 56px); line-height: 1.1; color: #21483d; letter-spacing: -1px; margin-bottom: 20px; }
+        .welcome-content h1 strong { color: #3c9075; }
+        .welcome-content > p { max-width: 540px; color: #687b75; font-size: 16px; line-height: 1.7; margin-bottom: 26px; }
+        .feature-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .feature-card { background: rgba(255, 255, 255, 0.85); border: 1px solid #e2eee9; border-radius: 14px; padding: 14px; transition: 0.25s; }
+        .feature-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(42, 91, 76, 0.08); }
+        .feature-icon { font-size: 20px; margin-bottom: 6px; }
+        .feature-card h3 { font-size: 13px; color: #315249; margin-bottom: 4px; }
+        .feature-card p { font-size: 11px; color: #7b8c87; line-height: 1.4; }
+        .auth-wrapper { width: 100%; max-width: 480px; margin-left: auto; animation: fadeUp 0.8s ease; }
+        .auth-card { background: #ffffff; border: 1px solid #e1ece7; border-radius: 22px; padding: 28px; box-shadow: 0 18px 50px rgba(42, 80, 68, 0.08); }
+        .auth-heading { margin-bottom: 18px; }
+        .auth-heading h2 { color: #24483e; font-size: 24px; margin-bottom: 4px; }
+        .auth-heading p { color: #7b8b86; font-size: 13px; }
+        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; background: #f1f7f4; padding: 4px; border-radius: 10px; margin-bottom: 18px; }
+        .tab-btn { border: none; background: transparent; padding: 9px; border-radius: 8px; color: #71827d; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: #ffffff; color: #28745f; box-shadow: 0 2px 8px rgba(50, 91, 78, 0.08); }
+        .form { display: none; }
+        .form.active { display: block; animation: fadeIn 0.3s ease; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; color: #435b54; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+        .input-wrap { position: relative; }
+        .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #91a19c; font-size: 13px; }
+        .form-group input { width: 100%; border: 1px solid #dce8e3; background: #fbfdfc; border-radius: 9px; padding: 9px 12px 9px 36px; outline: none; color: #304941; font-size: 13px; transition: 0.2s; }
+        .form-group input:focus { border-color: #75bca4; background: #ffffff; box-shadow: 0 0 0 3px rgba(92, 177, 147, 0.10); }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .section-divider { margin: 14px 0 10px; padding-top: 10px; border-top: 1px dashed #dce8e3; font-size: 11px; font-weight: 700; color: #d97724; display: flex; align-items: center; gap: 6px; }
+        .submit-btn { width: 100%; border: none; border-radius: 10px; padding: 12px; background: #347f68; color: white; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: 0.2s; }
+        .submit-btn:hover { background: #286c58; }
+        .privacy-note { margin-top: 12px; padding: 8px 10px; background: #f5faf8; border: 1px solid #e5efeb; border-radius: 8px; color: #748680; font-size: 11px; line-height: 1.4; text-align: center; }
+        .message { display: none; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; line-height: 1.4; }
+        .message.show { display: block; }
+        .message.error { background: #fff4f3; color: #a55a54; border: 1px solid #f3d9d6; }
+        .message.success { background: #effaf5; color: #397861; border: 1px solid #d5eee3; }
+        .footer { background: #203f36; color: #dcebe6; margin-top: auto; }
+        .footer-inner { max-width: 1180px; margin: auto; padding: 36px 24px 20px; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 40px; }
+        .footer-brand h3 { font-size: 18px; color: #ffffff; margin-bottom: 8px; }
+        .footer-brand p { max-width: 320px; color: #b6cbc4; font-size: 12px; line-height: 1.6; }
+        .footer-column h4 { color: #ffffff; font-size: 13px; margin-bottom: 10px; }
+        .footer-column a { display: block; text-decoration: none; color: #b6cbc4; font-size: 12px; margin-bottom: 8px; transition: 0.2s; }
+        .footer-column a:hover { color: #ffffff; }
+        .footer-bottom { max-width: 1180px; margin: auto; border-top: 1px solid rgba(255,255,255,0.10); padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .footer-bottom p, .footer-tag { color: #9eb7ae; font-size: 11px; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 900px) { .nav-links { display: none; } .main-section { grid-template-columns: 1fr; gap: 30px; } .auth-wrapper { margin: auto; } .welcome-content { text-align: center; } .welcome-content > p, .feature-row { margin: auto; } }
+        @media (max-width: 600px) { .two-column, .feature-row { grid-template-columns: 1fr; gap: 0; } .footer-inner { grid-template-columns: 1fr; } }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo"><span class="nav-logo-icon">M</span>MindEase</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#login">Check-In</a>
+                <a href="#login">My History</a>
+                <a href="#login">Insights</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-section">
+        <section class="welcome-content">
+            <div class="small-badge"><span></span>Private Mental Wellness Companion</div>
+            <h1>A calmer space to <strong>check in</strong> with yourself.</h1>
+            <p>MindEase helps you reflect on your mood, understand changing stress patterns, and notice meaningful changes over time — privately and safely.</p>
+            <div class="feature-row">
+                <div class="feature-card"><div class="feature-icon">🧘</div><h3>Daily Reflection</h3><p>Take a simple moment to understand how you feel.</p></div>
+                <div class="feature-card"><div class="feature-icon">📈</div><h3>Notice Patterns</h3><p>Understand changes in mood and stress over time.</p></div>
+                <div class="feature-card"><div class="feature-icon">🚨</div><h3>Emergency Safety</h3><p>Contact support setup for critical wellness moments.</p></div>
+            </div>
+        </section>
+
+        <section class="auth-wrapper" id="login">
+            <div class="auth-card">
+                <div class="auth-heading">
+                    <h2 id="authTitle">Welcome to MindEase</h2>
+                    <p id="authSubtitle">Sign in to continue your private wellness journey.</p>
+                </div>
+
+                <div class="auth-tabs">
+                    <button class="tab-btn active" id="loginTab" type="button">Login</button>
+                    <button class="tab-btn" id="registerTab" type="button">Register</button>
+                </div>
+
+                <div class="message" id="message"></div>
+
+                <!-- LOGIN FORM -->
+                <form class="form active" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">✉</span>
+                            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Login to MindEase</button>
+                </form>
+
+                <!-- REGISTER FORM -->
+                <form class="form" id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Full Name</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="registerName" placeholder="Enter full name" required>
+                        </div>
+                    </div>
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="registerEmail">Email Address</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">✉</span>
+                                <input type="email" id="registerEmail" placeholder="Enter email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPhone">Mobile Number</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">📱</span>
+                                <input type="tel" id="registerPhone" placeholder="Mobile number" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-divider"><span>🚨 EMERGENCY CONTACT SUPPORT</span></div>
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="emergencyName">Emergency Contact Person</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">🤝</span>
+                                <input type="text" id="emergencyName" placeholder="Relative / Friend" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="emergencyPhone">Emergency Contact Number</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">📞</span>
+                                <input type="tel" id="emergencyPhone" placeholder="Emergency phone" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="registerPassword" placeholder="Password" minlength="6" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">🔐</span>
+                                <input type="password" id="confirmPassword" placeholder="Confirm" minlength="6" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Create MindEase Account</button>
+                </form>
+
+                <div class="privacy-note">🔒 Your information is encrypted and private. MindEase is designed for awareness, not medical diagnosis.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <h3>MindEase</h3>
+                <p>A private space for reflection, awareness and everyday wellbeing. Notice the change, understand the pattern, and reach out when support is needed.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a><a href="#login">Check-In</a><a href="#login">My History</a>
+            </div>
+            <div class="footer-column">
+                <h4>MindEase</h4>
+                <a href="#login">Privacy & Safety</a><a href="#login">About the Project</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 MindEase. All rights reserved.</p>
+            <div class="footer-tag">Built for awareness, not diagnosis.</div>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const authTitle = document.getElementById("authTitle");
+    const authSubtitle = document.getElementById("authSubtitle");
+    const message = document.getElementById("message");
+
+    loginTab.addEventListener("click", function () {
+        loginTab.classList.add("active"); registerTab.classList.remove("active");
+        loginForm.classList.add("active"); registerForm.classList.remove("active");
+        authTitle.textContent = "Welcome to MindEase";
+        authSubtitle.textContent = "Sign in to continue your private wellness journey.";
+        clearMessage();
+    });
+
+    registerTab.addEventListener("click", function () {
+        registerTab.classList.add("active"); loginTab.classList.remove("active");
+        registerForm.classList.add("active"); loginForm.classList.remove("active");
+        authTitle.textContent = "Create your MindEase account";
+        authSubtitle.textContent = "Create a private space for your daily reflection.";
+        clearMessage();
+    });
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "message show " + type;
+    }
+    function clearMessage() {
+        message.textContent = "";
+        message.className = "message";
+    }
+
+    /* ================= REGISTER LOGIC (BACKEND HOOKED) ================= */
+    registerForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("registerName").value.trim();
+        const email = document.getElementById("registerEmail").value.trim();
+        const phone = document.getElementById("registerPhone").value.trim();
+        const password = document.getElementById("registerPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+            showMessage("Passwords do not match. Please try again.", "error");
+            return;
+        }
+
+        const userPayload = { name, email, phone, password };
+
+        fetch("http://localhost:5000/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userPayload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === "Account ban gaya hai!" || data.user) {
+                localStorage.setItem("mindease_user", JSON.stringify(data.user));
+                localStorage.setItem("mindease_session", "true");
+                showMessage("Account registered successfully! Redirecting...", "success");
+                setTimeout(() => window.location.replace("home.html"), 1000);
+            } else {
+                showMessage(data.message || "Registration failed.", "error");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showMessage("Server se connect nahi ho paya.", "error");
+        });
+    });
+
+    /* ================= LOGIN LOGIC (BACKEND HOOKED) ================= */
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+
+        fetch("http://localhost:5000/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === "Login successful!" || data.user) {
+                localStorage.setItem("mindease_user", JSON.stringify(data.user));
+                localStorage.setItem("mindease_session", "true");
+                showMessage("Login successful! Redirecting...", "success");
+                setTimeout(() => window.location.replace("home.html"), 1000);
+            } else {
+                showMessage(data.message || "Invalid email or password.", "error");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showMessage("Server se connect nahi ho paya.", "error");
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MindEase | AI Chat</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5faf8;
+            color: #29443c;
+        }
+
+        .header {
+            height: 72px;
+            background: white;
+            border-bottom: 1px solid #e4eee9;
+
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: bold;
+            color: #21483d;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .chat-box {
+            background: white;
+            border: 1px solid #dfece7;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(43,92,77,0.08);
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: #e9f8f2;
+            border-bottom: 1px solid #dceee7;
+        }
+
+        .chat-header h2 {
+            margin: 0 0 5px;
+            color: #21483d;
+        }
+
+        .chat-header p {
+            margin: 0;
+            color: #6d817a;
+            font-size: 13px;
+        }
+
+        .messages {
+            height: 400px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .ai {
+            background: #eaf8f3;
+            color: #31544a;
+        }
+
+        .user {
+            background: #347f68;
+            color: white;
+            margin-left: auto;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            border-top: 1px solid #e5eeea;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 13px;
+            border: 1px solid #d8e7e1;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .input-area button {
+            border: none;
+            background: #347f68;
+            color: white;
+            padding: 0 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">🌿 MindEase</div>
+</header>
+
+<div class="chat-container">
+
+    <div class="chat-box">
+
+        <div class="chat-header">
+            <h2>MindEase AI</h2>
+            <p>A supportive space to express yourself</p>
+        </div>
+
+        <div class="messages" id="messages">
+
+            <div class="message ai">
+                Hi! I'm MindEase AI 🌿<br>
+                You can share how you're feeling with me.
+            </div>
+
+        </div>
+
+        <div class="input-area">
+
+            <input
+                type="text"
+                id="messageInput"
+                placeholder="Share what's on your mind..."
+            >
+
+            <button onclick="sendMessage()">
+                Send
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function sendMessage() {
+
+    const input =
+        document.getElementById("messageInput");
+
+    const text =
+        input.value.trim();
+
+    if (text === "") {
+        return;
+    }
+
+    const messages =
+        document.getElementById("messages");
+
+    const userMessage =
+        document.createElement("div");
+
+    userMessage.className =
+        "message user";
+
+    userMessage.textContent =
+        text;
+
+    messages.appendChild(userMessage);
+
+    input.value = "";
+
+    const aiMessage =
+        document.createElement("div");
+
+    aiMessage.className =
+        "message ai";
+
+    aiMessage.textContent =
+        "Thank you for sharing. Take a moment to breathe and be kind to yourself. 🌿";
+
+    messages.appendChild(aiMessage);
+
+    messages.scrollTop =
+        messages.scrollHeight;
+}
+
+</script>
+
+</body>
+</html>
